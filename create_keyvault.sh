@@ -39,16 +39,16 @@ echo "RUNNING..."
 
 az group create \
   --subscription "${sub_id}" \
-	--location "${location}" \
-	--name "${rg_name}" \
+  --location "${location}" \
+  --name "${rg_name}" \
   --only-show-errors \
   --output none
 
 kv_resource_id=$(az keyvault create \
   --subscription "${sub_id}" \
-	--location "${location}" \
-	--resource-group "${rg_name}" \
-	--name "${kv_name}" \
+  --location "${location}" \
+  --resource-group "${rg_name}" \
+  --name "${kv_name}" \
   --only-show-errors \
   --query id \
   --output tsv)
