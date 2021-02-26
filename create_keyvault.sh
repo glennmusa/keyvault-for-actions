@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Creates a KeyVault and Service Principal that has Contributor scope only for that KeyVault
+# Creates a Key Vault and Service Principal that has Contributor scope only for that Key Vault
 # Returns a JSON object to store in a GitHub secret for logging in with
 
 function error_log () {
@@ -82,8 +82,11 @@ echo "Be sure that you do not include these credentials in your code or check th
 echo "For more information, see https://aka.ms/azadsp-cli"
 echo "**********"
 echo
-echo "Paste the entire JSON output below into your GitHub secret value field."
-echo "Give the secret the name AZURE_CREDENTIALS."
+echo "Here's your Key Vault name. You'll need this for your azure/get-keyvault-secrets GitHub Action."
+echo "KEY VAULT NAME: ${kv_name}"
 echo
-echo $azure_credentials
+echo "Paste the entire JSON output below into GitHub secret value named AZURE_CREDENTIALS."
+echo "AZURE_CREDENTIALS:"
+echo
+echo "${azure_credentials}"
 echo
