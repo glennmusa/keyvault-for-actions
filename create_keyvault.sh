@@ -32,7 +32,7 @@ timestamp=$(date +%s)
 prefix="ghactions"
 rg_name="${prefix}rg${timestamp}"
 kv_name="${prefix}kv${timestamp}"
-sp_name="http://${kv_name}-service-principal"
+sp_name="http://${kv_name}-reader-service-principal"
 
 echo
 echo "RUNNING..."
@@ -55,7 +55,7 @@ kv_resource_id=$(az keyvault create \
 
 azure_credentials=$(az ad sp create-for-rbac \
   --name "${sp_name}" \
-  --role contributor \
+  --role reader \
   --scopes "${kv_resource_id}" \
   --only-show-errors \
   --sdk-auth)
