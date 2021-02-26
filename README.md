@@ -1,6 +1,6 @@
 # keyvault-for-actions
 
-Generate a KeyVault and tightly scoped Service Principal to pull secrets for use in a Git Hub Actions workflow.
+Generate an Azure Key Vault and tightly scoped Service Principal to pull secrets for use in a Git Hub Actions workflow.
 
 This is the resource creation automation for this tutorial: <https://github.com/marketplace/actions/azure-key-vault-get-secrets/>
 
@@ -16,11 +16,11 @@ At some point you'll need to use secrets like passwords, connection strings, or 
 ## What is in here
 
 1. [create_keyvault.sh](#create_keyvault.sh) - a bash script to create the resources you need so that you can execute...
-2. [read_secrets.yml](#read_secrets.yml) - a Github Actions workflow that securely pulls secrets from that KeyVault
+1. [read_secrets.yml](#read_secrets.yml) - a Github Actions workflow that securely pulls secrets from that Key Vault
 
 ### create_keyvault.sh
 
-A shell script that will generate a resource group, Azure KeyVault, and a limited scope Service Principal that has the [Contributor role](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles) to __only__ the KeyVault resource that is created.
+A shell script that will generate a resource group, Key Vault, and a limited scope Service Principal that has the [Contributor role](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles) to __only__ the Key Vault resource that is created.
 
 1. First, login to Azure CLI:
 
@@ -28,13 +28,13 @@ A shell script that will generate a resource group, Azure KeyVault, and a limite
     az login
     ```
 
-2. Then, make the script executable:
+1. Then, make the script executable:
 
     ```shell
     chmod u+x ./create_keyvault.sh
     ```
 
-3. Finally, execute the script to create the resources.
+1. Finally, execute the script to create the resources.
 
     ```shell
     ./create_keyvault.sh
@@ -46,7 +46,7 @@ A shell script that will generate a resource group, Azure KeyVault, and a limite
     ./create_keyvault.sh <subscription ID or name> <location>
     ```
 
-    For example, if I wanted to set up my KeyVault in a different cloud that doesn't have `eastus`, I would do so like:
+    For example, if I wanted to set up my Key Vault in a different cloud that doesn't have `eastus`, I would do so like:
 
     ```shell
     az cloud set -n <cloud name>
@@ -54,28 +54,71 @@ A shell script that will generate a resource group, Azure KeyVault, and a limite
     ./create_keyvault <desired subscription ID or name> <desired region>
     ```
 
-4. Once everything is complete, you'll receive a JSON output containing the value to provide the GitHub secret "AZURE_CREDENTIALS".
+1. Once everything is complete, you'll receive two things:
+
+    - the Key Vault name and
+    - a JSON object containing the value for the GitHub secret "AZURE_CREDENTIALS"
 
     ```shell
-    # The command should output a JSON object similar to this:
-      {
+    # create_keyvault.sh output
+
+    Here's your Key Vault name. You'll need this for your azure/get-keyvault-secrets GitHub Action.
+    KEY VAULT NAME: ghactionskv0123456789
+
+    Paste the entire JSON output below into GitHub secret value named AZURE_CREDENTIALS.
+    AZURE_CREDENTIALS:
+
+    {
         "clientId": "<GUID>",
         "clientSecret": "<GUID>",
         "subscriptionId": "<GUID>",
         "tenantId": "<GUID>",
         (...)
-      }
+    }
     ```
 
-5. Create a secret in your repository called "AZURE_CREDENTIALS" and provide the JSON output from the command as the value.
+1. Create a secret in your repository called "AZURE_CREDENTIALS" and set the JSON object output from `create_keyvault.sh` as the value.
 
-    For more information on how to set a secret see <https://docs.github.com/en/actions/reference/encrypted-secrets#creating-encrypted-secrets-for-a-repository/>
+    For how to set secrets see <https://docs.github.com/en/actions/reference/encrypted-secrets#creating-encrypted-secrets-for-a-repository/>
 
 ### read_secrets.yml
 
-A GitHub Actions workflow that uses the KeyVault and Service Principal created by `create_keyvault.sh`
+A sample GitHub Actions workflow that uses the Key Vault and Service Principal created by `create_keyvault.sh`.
 
-## Other helpful things
+The workflow contains two jobs that show how to retrieve sensitive values for logging into an Azure Container Registry and downloading a blob from an Azure storage account.
+
+You can certainly use these samples to achieve those things if you'd like, but the value is in how Key Vault secrets are accessed:
+
+```yaml
+    - uses: azure/login@v1
+        with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }} # Our output from create_keyvault.sh, stored as a GitHub Secret
+    - id: get-secrets
+        uses: azure/get-keyvault-secrets@v1
+        with:
+        keyvault: "[[ YOUR_KEYVAULT_NAME ]]" # Our output from create_keyvault.sh, written into the workflow
+        secrets: 'storage-key' # A comma-separated string of secrets to retreive from Key Vault
+    - name: download file with storage account key
+        uses: azure/CLI@v1
+        with:
+        inlineScript: | # Access secrets via the ${{ }} syntax and the step id of the azure/get-keyvault-secrets Action
+            az storage blob download \
+            --account-name yourstorageaccountname \
+            --account-key ${{ steps.get-secrets.outputs.storage-key }} \
+            --container yourcontainer \
+            --name uploadedfile.txt \
+            --file downloadedfile.txt
+```
+
+The key takeaways:
+
+- The workflow makes use of the `azure/login` GitHub Action passing in the "AZURE_CREDENTIALS" GitHub secret you created from `create_keyvault.sh`
+- The Key Vault secrets to retrieve are a comma-separated string passed into the `secrets` argument of the `azure/get-keyvault-secrets` GitHub Action
+- Key Vault Secrets are used by the referencing the `outputs` of the step that retrieved the secrets.
+
+## Helpful Links
+
+### GitHub Workflow Docs
 
 ### .devcontainer
 
