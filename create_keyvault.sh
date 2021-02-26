@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Creates a KeyVault and Service Principal that has Contributor scope only for that KeyVault
-# Returns a JSON object to store in a GitHub secret for logging in with 
+# Returns a JSON object to store in a GitHub secret for logging in with
 
 function error_log () {
   echo "Error: ${1}" >&2
