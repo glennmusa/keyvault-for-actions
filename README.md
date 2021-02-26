@@ -15,8 +15,8 @@ At some point you'll need to use secrets like passwords, connection strings, or 
 
 ## What is in here
 
-1. [create_keyvault.sh](#create_keyvault.sh) - a bash script to create the resources you need so that you can execute...
-1. [read_secrets.yml](#read_secrets.yml) - a Github Actions workflow that securely pulls secrets from that Key Vault
+1. [create_keyvault.sh](./create_keyvault.sh) - a bash script to create the resources you need so that you can execute...
+1. [read_secrets.yml](.github/workflows/read-secrets.yml) - a Github Actions workflow that securely pulls secrets from that Key Vault
 
 ### create_keyvault.sh
 
