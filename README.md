@@ -8,6 +8,10 @@ This is the resource creation automation for this tutorial: <https://github.com/
 
 At some point you'll need to use secrets like passwords, connection strings, or API keys, in an automated CI/CD pipeline and you definitely don't want those things stored in your repository for potential abuse.
 
+- The Service Prinicipal you'll create from this repository has ["Reader" RBAC management-plane permissions](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles) to the Key Vault. The Service Principal can access the Key Vault resource, but does not have management permissions to update or modify the Key Vault or any other resource in the resource group or subscription the Key Vault resides in.
+
+- The Service Principal you'll create from this repository has ["get list" Key Vault data-plane permissions](https://docs.microsoft.com/en-us/azure/key-vault/general/security-overview#privileged-access) to the Key Vault. The Service Principal does not have permissions to set, delete, backup, or restore secrets.
+
 ## What you need
 
 - A GitHub repository
