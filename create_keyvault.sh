@@ -54,9 +54,9 @@ kv_resource_id=$(az keyvault create \
   --output tsv)
 
 azure_credentials=$(az ad sp create-for-rbac \
-	--name "${sp_name}" \
-	--role contributor \
-	--scopes "${kv_resource_id}" \
+  --name "${sp_name}" \
+  --role contributor \
+  --scopes "${kv_resource_id}" \
   --only-show-errors \
   --sdk-auth)
 
