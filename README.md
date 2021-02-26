@@ -20,38 +20,19 @@ At some point you'll need to use secrets like passwords, connection strings, or 
 
 ### create_keyvault.sh
 
-A shell script that will generate a resource group, Key Vault, and a limited scope Service Principal that has the [Contributor role](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles) to __only__ the Key Vault resource that is created.
+This is a shell script that will generate a resource group, Key Vault, and a limited scope Service Principal that has the [Contributor role](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles) to __only__ the Key Vault resource that is created.
 
-1. First, login to Azure CLI:
-
-    ```shell
-    az login
-    ```
-
-1. Then, make the script executable:
+1. First, make the script executable with `chmod` and login to Azure CLI:
 
     ```shell
     chmod u+x ./create_keyvault.sh
+    az login
     ```
 
-1. Finally, execute the script to create the resources.
+1. Then, execute the script to create the resources (see [Optional Parameters](#Optional-Parameters) for setting a subscription ID or location, or for use with another Cloud).
 
     ```shell
     ./create_keyvault.sh
-    ```
-
-    Optionally, you can specify the subscription and region to deploy resources into. The subscription is defaulted upon `az login` and the location defaults to `eastus`:
-
-    ```shell
-    ./create_keyvault.sh <subscription ID or name> <location>
-    ```
-
-    For example, if I wanted to set up my Key Vault in a different cloud that doesn't have `eastus`, I would do so like:
-
-    ```shell
-    az cloud set -n <cloud name>
-    az login
-    ./create_keyvault <desired subscription ID or name> <desired region>
     ```
 
 1. Once everything is complete, you'll receive two things:
@@ -59,7 +40,9 @@ A shell script that will generate a resource group, Key Vault, and a limited sco
     - the Key Vault name and
     - a JSON object containing the value for the GitHub secret "AZURE_CREDENTIALS"
 
-    ```shell
+    Here's what that should look like:
+
+    ```plaintext
     # create_keyvault.sh output
 
     Here's your Key Vault name. You'll need this for your azure/get-keyvault-secrets GitHub Action.
@@ -83,11 +66,11 @@ A shell script that will generate a resource group, Key Vault, and a limited sco
 
 ### read_secrets.yml
 
-A sample GitHub Actions workflow that uses the Key Vault and Service Principal created by `create_keyvault.sh`.
+This is a sample GitHub Actions workflow that uses the Key Vault and Service Principal created by `create_keyvault.sh`.
 
 The workflow contains two jobs that show how to retrieve sensitive values for logging into an Azure Container Registry and downloading a blob from an Azure storage account.
 
-You can certainly use these samples to achieve those things if you'd like, but the value is in how Key Vault secrets are accessed:
+You can use these samples to achieve those things if you'd like, but the value is in describing how Key Vault secrets are accessed:
 
 ```yaml
     - uses: azure/login@v1
@@ -112,13 +95,37 @@ You can certainly use these samples to achieve those things if you'd like, but t
 
 The key takeaways:
 
-- The workflow makes use of the `azure/login` GitHub Action passing in the "AZURE_CREDENTIALS" GitHub secret you created from `create_keyvault.sh`
+- The workflow uses the `azure/login` GitHub Action passing in the "AZURE_CREDENTIALS" GitHub secret you created from `create_keyvault.sh`
 - The Key Vault secrets to retrieve are a comma-separated string passed into the `secrets` argument of the `azure/get-keyvault-secrets` GitHub Action
 - Key Vault Secrets are used by the referencing the `outputs` of the step that retrieved the secrets.
 
+## Optional Parameters
+
+Optionally, you can specify the subscription and region to deploy resources into. The subscription is defaulted upon `az login` and the location defaults to `eastus`:
+
+```shell
+./create_keyvault.sh <subscription ID or name> <location>
+```
+
+For example, if I wanted to set up my Key Vault in a different cloud that doesn't have `eastus`, I would do so like:
+
+```shell
+az cloud set -n <cloud name>
+az login
+./create_keyvault <desired subscription ID or name> <desired region>
+```
+
 ## Helpful Links
 
-### GitHub Workflow Docs
+Workflow Syntax: <https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions/>
+
+Encrypted Secrets: <https://docs.github.com/en/actions/reference/encrypted-secrets/>
+
+GitHub Actions:
+
+- azure/login: <https://github.com/azure/login/>
+- azure/CLI: <https://github.com/azure/CLI/>
+- azure/get-keyvault-secrets: <https://github.com/azure/get-keyvault-secrets/>
 
 ### .devcontainer
 
