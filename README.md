@@ -1,6 +1,6 @@
 # keyvault-for-actions
 
-Generate an Azure Key Vault and tightly scoped Service Principal to pull secrets for use in a Git Hub Actions workflow.
+Generate an Azure Key Vault and tightly scoped Service Principal to pull secrets for use in a GitHub Actions workflow.
 
 This is the resource creation automation for this tutorial: <https://github.com/marketplace/actions/azure-key-vault-get-secrets/>
 
@@ -24,7 +24,7 @@ At some point you'll need to use secrets like passwords, connection strings, or 
 
 ### create_keyvault.sh
 
-This is a shell script that will generate a resource group, Key Vault, and a limited scope Service Principal that has the [Contributor role](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles) to __only__ the Key Vault resource that is created.
+This is a shell script that will generate a resource group, Key Vault, and a limited scope Service Principal that has the [Reader role](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles) to __only__ the Key Vault resource that is created.
 
 1. First, make the script executable with `chmod` and login to Azure CLI:
 
