@@ -2,7 +2,7 @@
 
 Generate an Azure Key Vault and tightly scoped Service Principal to pull secrets for use in a GitHub Actions workflow.
 
-This is the resource creation automation for this tutorial: <https://github.com/marketplace/actions/azure-key-vault-get-secrets/>
+This is the resource creation automation for the required resources in this GitHub Action: <https://github.com/marketplace/actions/azure-key-vault-get-secrets/>
 
 ## Why
 
