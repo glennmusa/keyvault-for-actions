@@ -82,10 +82,11 @@ echo "Be sure that you do not include these credentials in your code or check th
 echo "For more information, see https://aka.ms/azadsp-cli"
 echo "**********"
 echo
-echo "Here's your Key Vault name. You'll need this for your azure/get-keyvault-secrets GitHub Action."
-echo "KEY VAULT NAME: ${kv_name}"
+echo "Here's the Key Vault name. Paste the entire JSON output below into a GitHub secret value named KEY_VAULT_NAME."
+echo "KEY VAULT NAME:"
+echo "${kv_name}"
 echo
-echo "Paste the entire JSON output below into GitHub secret value named AZURE_CREDENTIALS."
+echo "Here's the AZURE CREDENTIALS. Paste the entire JSON output below into a GitHub secret value named AZURE_CREDENTIALS."
 echo "AZURE_CREDENTIALS:"
 echo
 echo "${azure_credentials}"
