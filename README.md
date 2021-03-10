@@ -83,7 +83,7 @@ You can use these samples to achieve those things if you'd like, but the value i
     - id: get-secrets
         uses: azure/get-keyvault-secrets@v1
         with:
-        keyvault: "[[ YOUR_KEYVAULT_NAME ]]" # Our output from create_keyvault.sh, written into the workflow
+        keyvault: "${{ secrets.KEY_VAULT_NAME }}" # Our output from create_keyvault.sh, stored as a GitHub Secret
         secrets: 'storage-key' # A comma-separated string of secrets to retreive from Key Vault
     - name: download file with storage account key
         uses: azure/CLI@v1
